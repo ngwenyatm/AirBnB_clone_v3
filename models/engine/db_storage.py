@@ -98,9 +98,3 @@ class DBStorage:
             all_objects = self.all(cls)
             return all_objects.get(get_key)
         return None"""
-
-    def count(self, cls=None):
-        """
-            returns count of all obj in storage
-        """
-        return (len(self.all(cls)))
