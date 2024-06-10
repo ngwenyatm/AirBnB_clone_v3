@@ -36,9 +36,10 @@ class FileStorage:
 
     def new(self, obj):
         """sets in __objects the obj with key <obj class name>.id"""
-        if obj is not None:
-            key = obj.__class__.__name__ + "." + obj.id
-            self.__objects[key] = obj
+        if isinstance(obj, User) and obj.password is not None:
+           obj.password = hashlib.md5(obj.password.encode()).hexdigest()
+        self.__objects[obj.to_dict(exclude_password=False)['__class__']
+                           + '.' + obj.id] = obj
 
     def save(self):
         """serializes __objects to the JSON file (path: __file_path)"""
