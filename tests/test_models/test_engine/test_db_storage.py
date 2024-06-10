@@ -86,3 +86,50 @@ class TestFileStorage(unittest.TestCase):
     @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
     def test_save(self):
         """Test that save properly saves objects to file.json"""
+        state = State(name="California")
+        models.storage.new(state)
+        models.storage.save()
+        self.assertIn("State." + state.id, models.storage.all(State))
+                      
+    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
+    def test_delete(self):
+        """tests the delete function"""
+        state = State(name="California")
+        models.storage.new(state)
+        models.storage.save()
+        self.assertIn("State." + state.id, models.storage.all(State))
+        models.storage.delete(state)
+        models.storage.save()
+        self.assertNotIn("State." + state.id, models.storage.all(State))
+               
+    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
+    def test_reload(self):
+         """test that reloads  properly"""
+         state = State(name="California")
+         models.storage.new(state)
+         models.storage.save()
+         models.storage.close()
+         models.storage.reload()
+         self.assertIn("State." + state.id, models.storage.all(State))
+               
+    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
+    def test_get(self):
+        """test that get retrieves the correct object"""
+        state = State(name="California")
+        models.storage.new(state)
+        models.storage.save()
+        retrieved_state = models.storage.get(State, state.id)
+        self.assertEqual(state, retrieved_state)
+               
+    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
+    def test_count(self):
+        """test if count returns the correct number of objects"""
+        initial_count = models.storage.count()
+        state = State(name="California")
+        models.storage.new(state)
+        models.storage.save()
+        self.assertEqual(models.storage.count(), initial_count + 1)
+        self.assertEqual(models.storage.count(state), 1)
+
+if __name__ = '__main__':
+    unittest.main()
