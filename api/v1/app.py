@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """
-Starts API
+Starts the Flask API
 """
 
 from flask import Flask, jsonify
@@ -14,15 +14,18 @@ app.register_blueprint(app_views)
 @app.teardown_appcontext
 def db_teardown(exception):
   """
-  Function for teardown
+  Function handles teardown
   """
   storage.close()
   
 @app.errorhandler(404)
 def notfound(error):
+  """
+  Returns a JSON-formatted 404 status code
+  """
   return jsonify({"error": "Not Found"}), 404
 
 if __name__ == '__main__':
   host = os.getenv("HBNB_API_HOST". "0.0.0.0")
   port = int(os.getenv("HBNB_API_PORT", 5000))
-  app.run(getenv("HBNB_API_HOST"), getenv("HBNB_API_PORT"))
+  app.run(host=host, port=port, threaded=True)
