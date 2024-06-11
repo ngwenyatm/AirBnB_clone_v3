@@ -38,8 +38,8 @@ class FileStorage:
         """sets in __objects the obj with key <obj class name>.id"""
         if isinstance(obj, User) and obj.password is not None:
            obj.password = hashlib.md5(obj.password.encode()).hexdigest()
-        self.__objects[obj.to_dict(exclude_password=False)['__class__']
-                           + '.' + obj.id] = obj
+        self.__objects[obj.to_dict(exclude_password=False)
+                       ['__class__'] + '.' + obj.id] = obj
 
     def save(self):
         """serializes __objects to the JSON file (path: __file_path)"""
@@ -67,12 +67,15 @@ class FileStorage:
                 del self.__objects[key]
 
    def get(self, cls, id):
-       """fetches one object, using classname and id"""
+       """
+       fetches one object, using classname and id
+       """
        all_class = self.all(cls)
        for obj in all_class.values():
            if id == str(obj.id):
                return obj
-
+       return None
+                      
    def count(self, cls=None):
         """
             returns count of all obj in storage
@@ -80,15 +83,7 @@ class FileStorage:
         return (len(self.all(cls)))
    
     def close(self):
-        """call reload() method for deserializing the JSON file to objects"""
+        """
+        call reload() method for deserializing the JSON file to objects
+        """
         self.reload()
-
-   """def get(self,cls,id):
-        """
-            fetches one object, using classname and id
-        """
-        if cls and id:
-            get_key = "{}.{}".format(cls, id)
-            all_objects = self.all(cls)
-            return all_objects.get(get_key)
-        return None"""
