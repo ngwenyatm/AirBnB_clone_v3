@@ -19,7 +19,7 @@ def db_teardown(exception):
   storage.close()
   
 @app.errorhandler(404)
-def 404_notfound(error):
+def notfound(error):
   return jsonify({"error": "Not Found"}), 404
 
 if __name__ == '__main__':
