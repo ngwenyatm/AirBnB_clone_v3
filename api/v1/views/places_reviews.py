@@ -1,6 +1,9 @@
 #!/usr/bin/python3
 """
-View for Reviews that handles all RESTful API actions
+View for Reviews that handles all RESTful API actions.
+
+This module provides functions for retrieving, creating, updating, and deleting
+Review objects associated with Places.
 """
 
 from flask import jsonify, request, abort
@@ -11,7 +14,20 @@ from api.v1.views import app_views
 
 @app_views.route('/places/<target_place_id>/reviews', methods=['GET'])
 def retrieve_all_reviews_for_place(target_place_id, user_id=None):
-    """ Retrieves the list of all Review objects of a Place """
+"""
+    Retrieves all Review objects associated with a specific Place.
+
+    Args:
+        target_place_id (str): The ID of the Place to retrieve reviews for.
+        user_id (str, optional): The ID of a specific user to filter reviews by. Defaults to None.
+
+    Returns:
+        JSON: A list of dictionaries representing the retrieved Review objects, or
+             a 404 Not Found response if the Place is not found.
+
+    Raises:
+        HTTPException: If the request is invalid (e.g., not a JSON request).
+    """
     place = storage.get("Place", target_place_id)
     if place is None:
         abort(404, "Place not found")
@@ -24,8 +40,20 @@ def retrieve_all_reviews_for_place(target_place_id, user_id=None):
 
 @app_views.route('/reviews/<review_id>', methods=['GET'])
 def retrieve_review(review_id):
-    """ Retrieves a Review object. """
-    review = storage.get("Review", review_id)
+ 
+    review = storage.get("Review", review_id)   """
+    Retrieves a specific Review object.
+
+    Args:
+        review_id (str): The ID of the Review object to retrieve.
+
+    Returns:
+        JSON: A dictionary representing the retrieved Review object, or a 404 Not Found
+             response if the Review is not found.
+
+    Raises:
+        HTTPException: If the request is invalid (e.g., not a JSON request).
+    """
     if review is None:
         abort(404, "Review not found")
     return jsonify(review.to_json())
@@ -33,7 +61,19 @@ def retrieve_review(review_id):
 
 @app_views.route('/reviews/<review_id>', methods=['DELETE'])
 def delete_review(review_id):
-    """ Deletes a Review object """
+"""
+    Deletes a specific Review object.
+
+    Args:
+        review_id (str): The ID of the Review object to delete.
+
+    Returns:
+        JSON: An empty JSON object with a 200 OK status code if the Review is deleted
+             successfully, or a 404 Not Found response if the Review is not found.
+
+    Raises:
+        HTTPException: If the request is invalid (e.g., not a JSON request).
+    """
     empty_dict = {}
     review = storage.get("Review", review_id)
     if review is None:
@@ -45,7 +85,20 @@ def delete_review(review_id):
 
 @app_views.route('/places/<target_place_id>/reviews', methods=['POST'])
 def create_review(target_place_id):
-    """ Creates a Review """
+    """
+    Creates a new Review object associated with a specific Place.
+
+    Args:
+        target_place_id (str): The ID of the Place to associate the new Review with.
+
+    Returns:
+        JSON: A dictionary representing the newly created Review object, or a 400 Bad Request
+             response if the request is invalid (e.g., missing required fields, invalid JSON format),
+             or a 404 Not Found response if the Place is not found.
+
+    Raises:
+        HTTPException: If the request is invalid (e.g., not a JSON request).
+    """
     place = storage.get("Place", target_place_id)
     if not place:
         abort(404, "Place not found")
@@ -67,7 +120,20 @@ def create_review(target_place_id):
 
 @app_views.route('/reviews/<review_id>', methods=['PUT'])
 def update_review(review_id):
-    """ Updates a Review object"""
+    """
+    Updates a specific Review object.
+
+    Args:
+        review_id (str): The ID of the Review object to update.
+
+    Returns:
+        JSON: A dictionary representing the updated Review object, or a 400 Bad Request
+            response if the request is invalid (e.g., not a JSON request), or a 404 Not Found
+            response if the Review is not found.
+
+    Raises:
+        AttributeError: If the provided method (`bm_update`) does not exist on the Review object.
+    """
     review = storage.get("Review", review_id)
     if review is None:
         abort(404, "Review not found")
