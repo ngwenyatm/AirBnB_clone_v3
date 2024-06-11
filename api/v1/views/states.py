@@ -78,8 +78,19 @@ def get_state(state_id):
     storage.save()
     return jsonify(new_state.to_dict()), 201
 
-  @app_views.route('/states/<state_id>'. methods=['PUT'], strict_slashes=False)
+  @app_views.route('/states/<state_id>', methods=['PUT'], strict_slashes=False)
   def update_state(state_id):
+    """
+    Updates a specific State object.
+
+    Args:
+        state_id (str): The ID of the State object to update.
+
+    Returns:
+        JSON: A dictionary representing the updated State object, or a 400 Bad Request
+            response if the request is invalid (e.g., not a JSON request), or a 404 Not Found
+            response if the State is not found.
+    """
       state = storage.get(State, state_id)
       if not state:
           abort(404)
