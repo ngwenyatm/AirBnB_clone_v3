@@ -1,5 +1,10 @@
 #!/usr/bin/python3
-"""State objects that handles all default RESTFul API actions"""
+"""
+Module for handling State objects with all default RESTful API actions.
+
+This module provides functions for retrieving, creating, updating, and deleting
+State objects through Flask routes.
+"""
 
 from models import storage
 from flask import jsonify, abort, request
@@ -9,13 +14,27 @@ from models.state import State
 
 @app_views.route('/states', methods=['GET'], strict_slashes=False)
 def get_states():
-  """gets all states"""
+  """
+    Retrieves all State objects.
+
+    Returns:
+        JSON: A list of dictionaries representing all State objects.
+    """
   states = storage.all(State).values()
   return jsonify([state.to_dict() for state in states])
 
 @app_views.route('/states/<state_id>', methods=['GET'], strict_slashes=False)
 def get_state(state_id):
-  """raises a 404 error"""
+   """
+    Retrieves a specific State object.
+
+    Args:
+        state_id (str): The ID of the State object to retrieve.
+
+    Returns:
+        JSON: A dictionary representing the retrieved State object, or a 404 Not Found
+            response if the State is not found.
+    """
   state = storage.get(State, state_id)
   if not state:
     abort(404)
@@ -23,7 +42,16 @@ def get_state(state_id):
 
   @app_views.route('/states/<state_id>', methods=['DELETE'], strict_slashes=False)
   def delete_state(state_id):
-    """Deletes"""
+     """
+    Deletes a specific State object.
+
+    Args:
+        state_id (str): The ID of the State object to delete.
+
+    Returns:
+        JSON: An empty JSON object with a 200 OK status code if the State is deleted
+            successfully, or a 404 Not Found response if the State is not found.
+    """
     state = storage.get(State, state_id)
     if not state:
       abort(404)
@@ -33,7 +61,13 @@ def get_state(state_id):
 
   @app_views.route('/states', methods=['POST'], strict_slashes=False)
   def create_state():
-    """Creates a state"""
+    """
+    Creates a new State object.
+
+    Returns:
+        JSON: A dictionary representing the newly created State object, or a 400 Bad Request
+            response if the request is invalid (e.g., missing required fields, invalid JSON format).
+    """
     if not request.json:
       abort(400, description="Not a JSON")
     if 'name' not in request.json:
